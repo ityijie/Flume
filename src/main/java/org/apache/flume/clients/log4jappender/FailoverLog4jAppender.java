@@ -148,7 +148,7 @@ public class FailoverLog4jAppender extends Log4jAppender {
                 String.valueOf(timeout));
       /*  props.setProperty(RpcClientConfigurationConstants.MAX_IO_WORKERS,
                 String.valueOf(maxIoWorkers));   */
-      //与slf4j框架冲bug
+      //与slf4j框架bug 冲突
         props.setProperty(RpcClientConfigurationConstants.MAX_IO_WORKERS,
                 (Runtime.getRuntime().availableProcessors() * 2)+"");
 
