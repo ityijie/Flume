@@ -2,6 +2,8 @@ package log;
 
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
+import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -18,28 +20,24 @@ public class log4j {
         System.out.println("开始发送");
         logger.info("log4j7测试数据" + " thread send message  on -");
 
-        ExecutorService fixedThreadPool = Executors.newFixedThreadPool(30);
-        int i = 0;
-        for(i = 0 ;i < 1 ;i++){
-            String  a = i + "";
-            //thread mTh = new thread(a);
-            //mTh.start();
-           // fixedThreadPool.execute(mTh);
+        thread mTh1 = new thread("A");
+        try {
+            mTh1.start();
+        } catch (Exception e) {
+            logger.info("程序出现错误,骚等片刻100S:" + e.toString());
+            try {
+                mTh1.sleep(100000);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
         }
-       thread mTh1 = new thread("A");
-        //thread mTh2 = new thread("B");
-        //thread mTh3 = new thread("C");
-        //thread mTh4 = new thread("D");
-
-       mTh1.start();
-       // mTh2.start();
 
     }
 }
 
 class thread extends Thread {
 
-    String message = "testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest" +
+    String message = "----->testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest" +
             "testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest";
 
     Logger logger = Logger.getLogger(thread.class);
@@ -60,44 +58,39 @@ class thread extends Thread {
 
     @Override
     public void run() {
-        SimpleDateFormat time =new SimpleDateFormat("HH:mm:ss");
+        Socket socket = null;
+        try {
+            socket = new Socket("datanode4",41414);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        SimpleDateFormat time = new SimpleDateFormat("HH:mm:ss");
+        String format = null;
+        Long currtime = null;
+        String test = "是否丢失 数据 log4j7测试数据";
+        String mess = "thread send message  on -";
+        String what = "- :  ---" + name + " for ";
         int i = 0;
+
         while (true) {
-            /*for (int i = 0; i < 101; i++) {
-                String format = time.format(System.currentTimeMillis());
-                logger.info("log4j7" + " thread send message  on -" + format + "- :  ---"+name+" for " + i + "--->" + message);
-            }*/
-            String format = time.format(System.currentTimeMillis());
-            logger.info("log4j7测试数据" + " thread send message  on -" + format + "- :  ---"+name+" for " + i++ + "--->" + message);
-            bpe1.info("bpe1 测试数据 log4j7" + " thread send message  on -" + format + "- :  ---"+name+" for " + i++ + "--->" + message);
-            bpe2.info("bpe2 测试数据 log4j7" + " thread send message  on -" + format + "- :  ---"+name+" for " + i++ + "--->" + message);
-            dse1.info("dse1 测试数据 log4j7" + " thread send message  on -" + format + "- :  ---"+name+" for " + i++ + "--->" + message);
-            dse2.info("dse2 测试数据 log4j7" + " thread send message  on -" + format + "- :  ---"+name+" for " + i++ + "--->" + message);
-            dse3.info("dse3 测试数据 log4j7" + " thread send message  on -" + format + "- :  ---"+name+" for " + i++ + "--->" + message);
-            dse4.info("dse4 测试数据 log4j7" + " thread send message  on -" + format + "- :  ---"+name+" for " + i++ + "--->" + message);
-            dse5.info("dse5 测试数据 log4j7" + " thread send message  on -" + format + "- :  ---"+name+" for " + i++ + "--->" + message);
-            dse6.info("dse6 测试数据 log4j7" + " thread send message  on -" + format + "- :  ---"+name+" for " + i++ + "--->" + message);
-            logger.info("log4j7测试数据s" + " thread send message  on -" + format + "- :  ---"+name+" for " + i++ + "--->" + message);
-          /*  try {
-                sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }*/
-
-            if(i>100 && i<110){
-                try {
+            try {
+                if(socket.isConnected()){
+                    currtime = System.currentTimeMillis();
+                    format = time.format(currtime);
+                    logger.info(test + mess + format + what + i++ + message);
+                    System.out.println("41414端口开放");
                     sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                }else {
+                    System.out.println("没有连接");
+                    sleep(2000);
                 }
-            }else {
-                   try {
-                sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+
+            } catch (Exception e) {
+                System.out.println("here");
+                System.out.println(e);
             }
 
-            }
         }
 
 
