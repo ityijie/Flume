@@ -149,6 +149,8 @@ public class FailoverLog4jAppender extends Log4jAppender {
       /*  props.setProperty(RpcClientConfigurationConstants.MAX_IO_WORKERS,
                 String.valueOf(maxIoWorkers));   */
       //与slf4j框架bug 冲突
+      //采用负载均衡方式配置打印日志时，出现循环打印出“Using default maxIOWorkers”导致栈溢出问题
+      //在getProperties方法中增加对maxIOWorkers初始化
         props.setProperty(RpcClientConfigurationConstants.MAX_IO_WORKERS,
                 (Runtime.getRuntime().availableProcessors() * 2)+"");
 
